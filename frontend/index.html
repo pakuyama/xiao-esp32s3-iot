@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XIAO IoT 대시보드</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="config.js"></script>
+</head>
+<body>
+  <header>
+    <h1>XIAO ESP32S3 대시보드</h1>
+    <div id="userBox" hidden>
+      <span id="userEmail"></span>
+      <button id="logoutBtn" class="ghost">로그아웃</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 로그인 / 회원가입 -->
+    <section id="authView" class="card narrow">
+      <div class="tabs">
+        <button data-mode="login" class="tab active">로그인</button>
+        <button data-mode="signup" class="tab">회원가입</button>
+      </div>
+      <form id="authForm">
+        <label>이메일 <input name="email" type="email" required autocomplete="email" /></label>
+        <label>비밀번호 (6자 이상) <input name="password" type="password" minlength="6" required autocomplete="current-password" /></label>
+        <button type="submit" id="authSubmit">로그인</button>
+      </form>
+      <p id="authMsg" class="msg"></p>
+    </section>
+
+    <!-- 대시보드 -->
+    <section id="dashView" hidden>
+      <div class="card">
+        <div class="row">
+          <label class="grow">디바이스
+            <select id="deviceSelect"></select>
+          </label>
+          <form id="addDeviceForm" class="row">
+            <input name="name" placeholder="새 디바이스 이름" required maxlength="50" />
+            <button type="submit">추가</button>
+          </form>
+        </div>
+        <div id="deviceInfo" class="muted"></div>
+      </div>
+
+      <div id="deviceArea" hidden>
+        <div class="stats">
+          <div class="card stat">
+            <div class="label">온도 (칩 내부)</div>
+            <div class="value" id="tempVal">—</div>
+          </div>
+          <div class="card stat">
+            <div class="label">아날로그 A0</div>
+            <div class="value" id="analogVal">—</div>
+          </div>
+          <div class="card stat">
+            <div class="label">LED</div>
+            <button id="ledBtn" class="led">—</button>
+          </div>
+          <div class="card stat">
+            <div class="label">상태</div>
+            <div class="value small" id="onlineVal">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>센서 기록 (최근 50개)</h2>
+          <canvas id="chart" height="110"></canvas>
+        </div>
+
+        <details class="card">
+          <summary>ESP32 펌웨어 설정값</summary>
+          <pre id="firmwareCfg"></pre>
+          <button id="deleteDeviceBtn" class="danger">이 디바이스 삭제</button>
+        </details>
+      </div>
+    </section>
+
+    <!-- API 요청 로그 -->
+    <details class="card" open>
+      <summary>API 요청 로그</summary>
+      <pre id="log"></pre>
+    </details>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
