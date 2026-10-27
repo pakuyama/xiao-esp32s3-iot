@@ -60,7 +60,7 @@ Swagger: http://127.0.0.1:8000/docs
 - LED: 보드 내장 USER LED (GPIO21, active-low). 외부 LED는 `LED_PIN`, `LED_ACTIVE_LOW` 수정
 
 ## 5. 배포
-**백엔드 (Render)** — GitHub 저장소 기준
+**백엔드 (Render)** — GitHub 저장소 기준 (Git Bash에서 실행 시 `export MSYS_NO_PATHCONV=1` 필수: `/api/health` 경로가 Windows 경로로 바뀌는 문제)
 ```powershell
 render login
 render services create --name xiao-iot-api --type web_service --runtime python `
@@ -80,3 +80,7 @@ vercel deploy --prod
 
 > Render 무료 플랜은 15분간 요청이 없으면 잠듭니다. ESP32가 켜져 있으면 계속 요청하므로 깨어 있고,
 > 꺼져 있을 땐 첫 요청에 30~60초 걸릴 수 있습니다.
+
+## 배포 주소
+- 대시보드: https://xiao-iot-dashboard-eight.vercel.app
+- API: https://xiao-iot-api-3uh2.onrender.com (Swagger: `/docs`)
