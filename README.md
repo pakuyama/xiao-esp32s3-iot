@@ -84,3 +84,52 @@ vercel deploy --prod
 ## 배포 주소
 - 대시보드: https://xiao-iot-dashboard-eight.vercel.app
 - API: https://xiao-iot-api-3uh2.onrender.com (Swagger: `/docs`)
+
+---
+
+# 📷 카메라 데이터 수집 (XIAO ESP32S3 Sense → Edge Impulse)
+
+```
+[XIAO ESP32S3 Sense] --HTTPS JPEG push--> [FastAPI @ Render] <--> [Supabase Storage: dataset 버킷]
+                                                 ^ 롱폴링(실시간 영상) / 촬영 / ZIP
+                         [camera.html @ Vercel] -+
+```
+
+ESP32가 프레임을 서버로 계속 보내고(대시보드가 보고 있을 때 최대 속도, 아니면 3초마다 1장),
+서버는 디바이스별 **최신 프레임만 메모리에** 보관합니다. 촬영 버튼을 누르면 그 이후 도착한 프레임을
+`dataset/{user_id}/{클래스}/{클래스}.{시각}.jpg` 로 저장 → 파일명 앞부분이 Edge Impulse 라벨로 인식됩니다.
+
+## 사용법
+1. 대시보드 로그인 → 상단 **📷 카메라 수집** (`camera.html`)
+2. 카메라용 디바이스 추가 → **ESP32 펌웨어 설정값**을 `camera/firmware/xiao_cam/secrets.h` 에 복사
+   (`secrets.example.h` 참고, WiFi 도 입력)
+3. 업로드 (**PSRAM=opi 필수**)
+   ```powershell
+   arduino-cli compile -b esp32:esp32:XIAO_ESP32S3:PSRAM=opi camera/firmware/xiao_cam
+   arduino-cli upload  -b esp32:esp32:XIAO_ESP32S3:PSRAM=opi -p COM4 camera/firmware/xiao_cam
+   ```
+4. 클래스 추가(영문/숫자/_/-) → 촬영
+
+| 기능 | 방법 |
+|---|---|
+| 촬영 / 연속 촬영 | `Space` / `B` (장수·간격 설정, 다시 `B` 또는 `Esc` 로 중지) |
+| 클래스 선택 | 클릭 또는 `1`~`9` |
+| 잘못 찍은 사진 삭제 | 썸네일 클릭(Shift+클릭 범위) → `Del` / 썸네일의 × |
+| 다운로드 | 클래스별 ZIP, 전체 ZIP (`{클래스}/{파일}.jpg` 구조) |
+| 카메라 설정 | 해상도(96×96~640×480), JPEG 화질, 상하/좌우 반전 → ESP32 에 즉시 반영 |
+
+## API (카메라)
+| Method | Path | 인증 | 설명 |
+|---|---|---|---|
+| POST | `/api/device/frame` | X-Device-Key | (ESP32) JPEG 업로드 → `{active, framesize, quality, vflip, hmirror}` |
+| GET | `/api/devices/{id}/frame?after=seq` | Bearer | 새 프레임 롱폴링 (최대 8초, 없으면 204, `X-Frame-Seq` 헤더) |
+| GET/PUT | `/api/devices/{id}/camera` | Bearer | 상태 / 카메라 설정 |
+| POST | `/api/devices/{id}/capture` | Bearer | `{label}` 촬영 → Storage 저장 |
+| GET | `/api/dataset` | Bearer | 클래스별 개수 |
+| GET | `/api/dataset/{label}` | Bearer | 이미지 목록 (1시간 서명 URL) |
+| POST | `/api/dataset/{label}/delete` | Bearer | `{names: [...]}` 선택 삭제 |
+| DELETE | `/api/dataset/{label}` | Bearer | 클래스 전체 삭제 |
+| GET | `/api/dataset/{label}/zip`, `/api/dataset-zip` | Bearer | ZIP 다운로드 |
+
+> `dataset` 버킷은 백엔드 시작 시 자동 생성(비공개)되므로 Supabase 에서 따로 할 일은 없습니다.
+> 프레임은 서버 메모리에만 있으므로 Render 는 인스턴스 1개(무료 플랜 기본)로 운영해야 합니다.

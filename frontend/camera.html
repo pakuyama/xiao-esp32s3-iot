@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XIAO 카메라 수집</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="camera.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📷 카메라 데이터 수집</h1>
+    <nav id="userBox">
+      <a href="index.html">센서 대시보드</a>
+      <span id="userEmail"></span>
+      <button id="logoutBtn" class="ghost">로그아웃</button>
+    </nav>
+  </header>
+
+  <main class="wide">
+    <section id="loginNotice" class="card narrow" hidden>
+      <p>먼저 <a href="index.html">대시보드</a>에서 로그인하세요. 로그인 후 이 페이지로 돌아오면 됩니다.</p>
+    </section>
+
+    <section id="camView" hidden>
+      <!-- 디바이스 + 카메라 설정 -->
+      <div class="card">
+        <div class="row">
+          <label class="grow">카메라 디바이스
+            <select id="deviceSelect"></select>
+          </label>
+          <form id="addDeviceForm" class="row">
+            <input name="name" placeholder="새 디바이스 이름" required maxlength="50" />
+            <button type="submit">추가</button>
+          </form>
+        </div>
+        <div class="row settings" id="settingsRow">
+          <label>해상도
+            <select id="framesize">
+              <option value="0">96×96</option>
+              <option value="1">160×120</option>
+              <option value="5">240×240</option>
+              <option value="6">320×240</option>
+              <option value="8">400×296</option>
+              <option value="10">640×480</option>
+            </select>
+          </label>
+          <label>JPEG 화질 <span class="muted" id="qualityVal"></span>
+            <input id="quality" type="range" min="4" max="40" step="1" />
+          </label>
+          <label class="check"><input id="vflip" type="checkbox" /> 상하 반전</label>
+          <label class="check"><input id="hmirror" type="checkbox" /> 좌우 반전</label>
+        </div>
+        <details>
+          <summary>ESP32 펌웨어 설정값 (camera/firmware/xiao_cam/secrets.h)</summary>
+          <pre id="firmwareCfg"></pre>
+        </details>
+      </div>
+
+      <div class="cam-grid">
+        <!-- 실시간 영상 + 촬영 -->
+        <div class="card">
+          <div class="live">
+            <img id="liveImg" alt="실시간 카메라" />
+            <div id="liveOverlay" class="overlay">카메라 연결 대기 중…</div>
+            <div id="flash" class="flash"></div>
+            <span id="liveBadge" class="badge">—</span>
+          </div>
+          <div class="capture-bar">
+            <div class="current">현재 클래스 <strong id="currentLabel">—</strong></div>
+            <button id="shotBtn" class="big">📸 촬영 <kbd>Space</kbd></button>
+          </div>
+          <div class="row burst">
+            <label>연속 촬영 장수 <input id="burstCount" type="number" min="1" max="500" value="20" /></label>
+            <label>간격(ms) <input id="burstInterval" type="number" min="200" max="10000" step="100" value="500" /></label>
+            <button id="burstBtn">▶ 연속 촬영 <kbd>B</kbd></button>
+          </div>
+          <div class="progress" id="burstProgress" hidden><div></div><span></span></div>
+          <p id="capMsg" class="msg"></p>
+        </div>
+
+        <!-- 클래스 -->
+        <div class="card">
+          <h2>클래스</h2>
+          <ul id="labelList" class="labels"></ul>
+          <form id="addLabelForm" class="row">
+            <input name="label" placeholder="새 클래스 (영문, 예: cat)" required pattern="[A-Za-z0-9_\-]{1,40}"
+                   title="영문/숫자/_/- 만, 최대 40자" class="grow" />
+            <button type="submit">추가</button>
+          </form>
+          <p class="muted">단축키: <kbd>1</kbd>~<kbd>9</kbd> 클래스 선택 · <kbd>Space</kbd> 촬영 · <kbd>B</kbd> 연속 촬영 · <kbd>Del</kbd> 선택 삭제 · <kbd>Esc</kbd> 선택 해제/중지</p>
+          <button id="zipAllBtn" class="ghost full">⬇ 전체 데이터셋 ZIP</button>
+        </div>
+      </div>
+
+      <!-- 갤러리 -->
+      <div class="card">
+        <div class="row gallery-head">
+          <h2 class="grow" id="galleryTitle">이미지</h2>
+          <button id="selectAllBtn" class="ghost">전체 선택</button>
+          <button id="deleteSelBtn" class="danger-btn" disabled>선택 삭제</button>
+          <button id="zipLabelBtn" class="ghost">⬇ 이 클래스 ZIP</button>
+          <button id="deleteLabelBtn" class="ghost danger-text">클래스 삭제</button>
+        </div>
+        <p class="muted">클릭: 선택 · Shift+클릭: 범위 선택 · 더블클릭: 원본 보기</p>
+        <div id="gallery" class="gallery"></div>
+      </div>
+    </section>
+
+    <details class="card">
+      <summary>API 요청 로그</summary>
+      <pre id="log"></pre>
+    </details>
+  </main>
+
+  <script src="camera.js"></script>
+</body>
+</html>

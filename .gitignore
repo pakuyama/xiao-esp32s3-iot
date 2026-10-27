@@ -3,3 +3,5 @@ __pycache__/
 .env
 firmware/xiao_iot/secrets.h
 .vercel
+camera/firmware/xiao_cam/secrets.h
+camera/collector/dataset/

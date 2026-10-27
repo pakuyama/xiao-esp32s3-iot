@@ -9,7 +9,7 @@
 body { margin: 0; font-family: system-ui, "Malgun Gothic", sans-serif; background: var(--bg); color: var(--text); }
 header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--card); }
 header h1 { font-size: 18px; margin: 0; }
-#userBox { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; }
+#userBox:not([hidden]) { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; }
 main { max-width: 960px; margin: 0 auto; padding: 20px 16px; display: grid; gap: 16px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
 .narrow { max-width: 380px; width: 100%; justify-self: center; }
@@ -38,3 +38,4 @@ form { display: grid; gap: 12px; }
 .led.on { background: var(--on); color: #111; }
 summary { cursor: pointer; font-weight: 600; font-size: 14px; }
 pre { background: var(--bg); padding: 10px; border-radius: 6px; font-size: 12px; overflow-x: auto; max-height: 260px; margin: 10px 0 0; white-space: pre-wrap; word-break: break-all; }
+.navlink { color: var(--accent); text-decoration: none; }

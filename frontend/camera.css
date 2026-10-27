@@ -1,0 +1,56 @@
+main.wide { max-width: 1200px; }
+#camView { display: grid; gap: 16px; }
+#userBox a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent); }
+kbd { font: 11px ui-monospace, monospace; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--muted); }
+button kbd { background: rgba(255,255,255,.2); border-color: transparent; color: inherit; }
+
+.settings { margin-top: 12px; align-items: center; }
+.settings label { min-width: 120px; }
+label.check { display: flex; align-items: center; gap: 6px; color: var(--text); }
+input[type=range] { padding: 0; }
+details summary { margin-top: 10px; }
+
+.cam-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+@media (max-width: 800px) { .cam-grid { grid-template-columns: 1fr; } }
+
+.live { position: relative; background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; }
+.live img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; color: #ddd; background: rgba(0,0,0,.6); font-size: 14px; text-align: center; padding: 16px; }
+.flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.flash.on { opacity: .7; transition: none; }
+.badge { position: absolute; top: 8px; left: 8px; font-size: 12px; padding: 3px 8px; border-radius: 99px; background: rgba(0,0,0,.6); color: #fff; }
+
+.capture-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+.current { font-size: 14px; color: var(--muted); }
+.current strong { font-size: 20px; color: var(--text); margin-left: 6px; }
+button.big { font-size: 17px; padding: 12px 22px; }
+.burst { margin-top: 12px; }
+.burst input { width: 110px; }
+button.stop { background: var(--danger); }
+.progress { position: relative; height: 22px; margin-top: 10px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+.progress div { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+.progress span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; }
+
+.labels { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; max-height: 320px; overflow-y: auto; }
+.labels li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.labels li.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.labels .name { flex: 1; font-weight: 600; word-break: break-all; }
+.labels .count { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+.full { width: 100%; margin-top: 12px; }
+
+.gallery-head { align-items: center; }
+.gallery-head h2 { margin: 0; }
+.danger-btn { background: var(--danger); }
+.danger-text { color: var(--danger); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin-top: 12px; }
+.thumb { position: relative; aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; background: var(--bg); cursor: pointer; border: 2px solid transparent; user-select: none; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb.sel { border-color: var(--accent); }
+.thumb.sel::after { content: "✓"; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; display: grid; place-items: center; }
+.thumb.new { animation: pop .5s; }
+@keyframes pop { from { transform: scale(.8); opacity: 0; } }
+.thumb .del { position: absolute; top: 4px; right: 4px; padding: 0 7px; font-size: 14px; line-height: 22px; background: rgba(0,0,0,.6); opacity: 0; }
+.thumb:hover .del { opacity: 1; }
+.empty { color: var(--muted); font-size: 14px; grid-column: 1 / -1; padding: 24px 0; text-align: center; }
+[hidden] { display: none !important; }
